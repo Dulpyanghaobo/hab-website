@@ -20,11 +20,6 @@ RUN rm -f /srv/jekyll/Gemfile.lock
 # 构建静态文件
 RUN jekyll build
 
-## 这里的 BUILDTIME_ENV_EXAMPLE 会自动在建置前被设置
-ARG BUILDTIME_ENV_EXAMPLE
-ENV BUILDTIME_ENV_EXAMPLE=${BUILDTIME_ENV_EXAMPLE}
-
-
 # 阶段 2: 部署阶段
 # 使用轻量级的 Nginx 镜像来部署网站
 FROM nginx:alpine
