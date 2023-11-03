@@ -32,10 +32,6 @@ FROM nginx:alpine
 # 从构建阶段复制生成的静态文件到 Nginx 的目录
 COPY --from=builder /srv/jekyll/_site /usr/share/nginx/html
 
-ENV \
-    PORT=8080 \
-    HOST=0.0.0.0
-
 EXPOSE 8080
 
 # 默认情况下，Nginx 会在启动时自动加载 /etc/nginx/conf.d 目录下的配置文件
