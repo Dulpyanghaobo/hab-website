@@ -6,11 +6,10 @@ FROM jekyll/jekyll:latest as builder
 WORKDIR /srv/jekyll
 
 # 复制 Gemfile 和 Gemfile.lock 到工作目录
+WORKDIR /srv/jekyll
+RUN chmod 777 -R /srv/jekyll
 COPY Gemfile Gemfile.lock /srv/jekyll/
-USER root
-RUN chmod 666 /srv/jekyll/Gemfile.lock
-
-# 安装依赖项
+RUN chown jekyll:jekyll /srv/jekyll/Gemfile.lock
 RUN bundle install
 
 # 复制网站源码到容器中
