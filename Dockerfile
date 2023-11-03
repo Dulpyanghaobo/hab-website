@@ -14,6 +14,10 @@ COPY . /srv/jekyll
 # 设置工作目录
 WORKDIR /srv/jekyll
 
+## 这里的 BUILDTIME_ENV_EXAMPLE 会自动在建置前被设置
+ARG BUILDTIME_ENV_EXAMPLE
+ENV BUILDTIME_ENV_EXAMPLE=${BUILDTIME_ENV_EXAMPLE}
+
 # 构建静态文件
 RUN jekyll build
 
