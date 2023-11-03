@@ -5,15 +5,21 @@ FROM jekyll/jekyll:latest as builder
 # 设置工作目录
 WORKDIR /srv/jekyll
 
-# 复制 Gemfile 和 Gemfile.lock 到工作目录
-WORKDIR /srv/jekyll
+# 给工作目录赋予权限
 RUN chmod 777 -R /srv/jekyll
+
+# 复制 Gemfile 和 Gemfile.lock 到工作目录
 COPY Gemfile Gemfile.lock /srv/jekyll/
+
+# 改变 Gemfile.lock 的所有权
 RUN chown jekyll:jekyll /srv/jekyll/Gemfile.lock
+
+# 安装依赖项
 RUN bundle install
 
-# 复制网站源码到容器中
+# 复制网站源码到容器中，除了 Gemfile.lock，因为它已经被修改和复制过了
 COPY . /srv/jekyll/
+RUN rm -f /srv/jekyll/Gemfile.lock
 
 # 构建静态文件
 RUN jekyll build
@@ -32,7 +38,7 @@ ENV PORT=8080 HOST=0.0.0.0
 EXPOSE 8080
 
 # 配置 Nginx
-# 可以在这里添加自定义 Nginx 配置，如果需要的话
+# 如果需要，可以在这里添加自定义的 Nginx 配置
 # COPY nginx.conf /etc/nginx/nginx.conf
 
 # 使用 Nginx 镜像的默认 CMD 启动命令，无需修改
