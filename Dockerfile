@@ -1,6 +1,6 @@
 # 阶段 1: 构建阶段
 # 使用 Jekyll 官方镜像作为基础来构建静态文件
-FROM jekyll/jekyll:4.2.0 as builder
+FROM jekyll/jekyll:latest as builder
 
 # 设置工作目录
 WORKDIR /srv/jekyll
