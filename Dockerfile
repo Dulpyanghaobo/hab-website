@@ -7,6 +7,8 @@ WORKDIR /srv/jekyll
 
 # 复制 Gemfile 和 Gemfile.lock 到工作目录
 COPY Gemfile Gemfile.lock /srv/jekyll/
+USER root
+RUN chmod 666 /srv/jekyll/Gemfile.lock
 
 # 安装依赖项
 RUN bundle install
