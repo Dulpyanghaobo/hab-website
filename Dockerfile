@@ -8,6 +8,9 @@ COPY ./_site/ /usr/share/nginx/html
 # 暴露 80 端口，Nginx 默认监听此端口
 EXPOSE 80
 
+# 通过nginx前台启动，保证容器在后台运行时不会停止
+CMD ["nginx", "-g", "daemon off;"]
+
 # 使用默认的 Nginx 配置
 # 如果你有自定义的 Nginx 配置文件，可以使用 COPY 指令覆盖默认配置
 # 例如：COPY nginx.conf /etc/nginx/nginx.conf
