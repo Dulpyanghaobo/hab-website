@@ -1,20 +1,35 @@
-# 使用官方 Nginx 镜像作为基础镜像
+# 阶段 1: 构建阶段
+# 使用 Jekyll 官方镜像作为基础来构建静态文件
+FROM jekyll/jekyll:4.2.0 as builder
+
+# 复制 Gemfile 和 Gemfile.lock
+COPY Gemfile* /srv/jekyll/
+
+# 安装依赖项
+RUN bundle install
+
+# 复制网站源码到容器中
+COPY . /srv/jekyll
+
+# 设置工作目录
+WORKDIR /srv/jekyll
+
+# 构建静态文件
+RUN jekyll build
+
+# 阶段 2: 部署阶段
+# 使用轻量级的 Nginx 镜像来部署网站
 FROM nginx:alpine
 
-# 将你的站点内容复制到容器中的 /usr/share/nginx/html
-# 这是 Nginx 默认的服务目录
-COPY ./_site/ /usr/share/nginx/html
+# 从构建阶段复制生成的静态文件到 Nginx 的目录
+COPY --from=builder /srv/jekyll/_site /usr/share/nginx/html
 
-# 暴露 80 端口，Nginx 默认监听此端口
+# 暴露 80 端口
 EXPOSE 80
 
-# 通过nginx前台启动，保证容器在后台运行时不会停止
-CMD ["nginx", "-g", "daemon off;"]
+# 默认情况下，Nginx 会在启动时自动加载 /etc/nginx/conf.d 目录下的配置文件
+# 如果你需要添加或修改 Nginx 配置，你可以添加一个新的配置文件到该目录
+# COPY your-custom-nginx-config.conf /etc/nginx/conf.d/
 
-# 使用默认的 Nginx 配置
-# 如果你有自定义的 Nginx 配置文件，可以使用 COPY 指令覆盖默认配置
-# 例如：COPY nginx.conf /etc/nginx/nginx.conf
-
-# 当容器启动时运行 Nginx
-# 由于使用的是官方的 Nginx 镜像，不需要手动编写 CMD 指令来启动 Nginx，
-# 因为官方镜像已经配置了默认的启动命令
+# 无需添加启动 Nginx 的 CMD 指令，因为使用的是官方的 Nginx 镜像，
+# 它默认会执行 'nginx -g daemon off;' 命令来启动服务
